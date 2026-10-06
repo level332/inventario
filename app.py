@@ -66,11 +66,11 @@ if not st.session_state.autenticado:
         if st.form_submit_button("🚀 ACCEDER AL SISTEMA", use_container_width=True):
             user_row = df_usuarios[df_usuarios["Usuario"] == u_in]
             
-            # --- CORRECCIÓN EN ESTA LÍNEA DE VALIDACIÓN ---
-            if not user_row.empty and str(user_row.iloc[0]["Clave"]) == str(c_in):
+            # --- SE CORRIGIERON LOS ÍNDICES NUMÉRICOS PARA EVITAR EL TYPEERROR ---
+            if not user_row.empty and str(user_row.iloc[0, 1]) == str(c_in):
                 st.session_state.autenticado = True
                 st.session_state.usuario_actual = u_in
-                st.session_state.rol_actual = user_row.iloc[0]["Rol"]
+                st.session_state.rol_actual = user_row.iloc[0, 2]
                 st.rerun()
             else: st.error("❌ Credenciales incorrectas")
 else:
