@@ -1,7 +1,8 @@
-def mostrar_menu(st, pd, datetime, DB_FILE, USERS_FILE, TIPOS_SPLITTER, df_usuarios, df_inventario, cargar_datos, cargar_usuarios, generar_kml):
+def mostrar_menu(st, pd, datetime, DB_FILE, USERS_FILE, LOGO_FILE, TIPOS_SPLITTER, df_usuarios, df_inventario, cargar_datos, cargar_usuarios, generar_kml):
+    import os
     with st.sidebar:
-        st.image("https://flaticon.com", width=120)
-        st.title("MENÚ")
+        if os.path.exists(LOGO_FILE): st.image(LOGO_FILE, width=130)
+        st.title("LEVELPLUS")
         st.markdown(f"👤 *{st.session_state.usuario_actual}* ({st.session_state.rol_actual})")
         opc = ["➕ Registrar", "📊 Inventario", "🌍 Google Earth", "⚙️ Técnicos"] if st.session_state.rol_actual == "Máster" else ["➕ Registrar", "📊 Mis Registros"]
         sel = st.radio("Herramientas:", opc)
@@ -32,7 +33,7 @@ def mostrar_menu(st, pd, datetime, DB_FILE, USERS_FILE, TIPOS_SPLITTER, df_usuar
                     st.success("✅ Guardado con éxito.")
 
     elif sel == "📊 Inventario":
-        st.title("📊 Inventario Global")
+        st.title("📊 Inventario Global - LEVELPLUS")
         df = cargar_datos()
         if df.empty: st.info("Sin registros.")
         else:
@@ -40,7 +41,7 @@ def mostrar_menu(st, pd, datetime, DB_FILE, USERS_FILE, TIPOS_SPLITTER, df_usuar
             with open(DB_FILE, "rb") as f: st.download_button("📥 Descargar Excel", f, "Inventario.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True)
 
     elif sel == "🌍 Google Earth":
-        st.title("🌍 Exportar a Google Earth")
+        st.title("🌍 Exportar Mapa a Google Earth")
         df = cargar_datos()
         if df.empty: st.info("Sin datos GPS.")
         else: st.download_button("🚀 Descargar Archivo KML", generar_kml(df), "Red_Fibra.kml", "application/vnd.google-earth.kml+xml", use_container_width=True)
