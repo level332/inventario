@@ -52,7 +52,6 @@ df_inventario = cargar_datos()
 st.set_page_config(page_title="LEVELPLUS Fibra", layout="wide")
 
 if not st.session_state.autenticado:
-    # Se eliminó el formato complejo HTML para evitar fallos de renderizado
     st.title("🦁 LEVELPLUS")
     st.subheader("Dedicados a Conectarte - Sistema de Gestión de Fibra")
     
@@ -66,10 +65,12 @@ if not st.session_state.autenticado:
         c_in = st.text_input("Contraseña", type="password")
         if st.form_submit_button("🚀 ACCEDER AL SISTEMA", use_container_width=True):
             user_row = df_usuarios[df_usuarios["Usuario"] == u_in]
-            if not user_row.empty and str(user_row.iloc["Clave"]) == str(c_in):
+            
+            # --- CORRECCIÓN EN ESTA LÍNEA DE VALIDACIÓN ---
+            if not user_row.empty and str(user_row.iloc[0]["Clave"]) == str(c_in):
                 st.session_state.autenticado = True
                 st.session_state.usuario_actual = u_in
-                st.session_state.rol_actual = user_row.iloc["Rol"]
+                st.session_state.rol_actual = user_row.iloc[0]["Rol"]
                 st.rerun()
             else: st.error("❌ Credenciales incorrectas")
 else:
