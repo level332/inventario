@@ -63,10 +63,12 @@ if not st.session_state.autenticado:
         c_in = st.text_input("Contraseña", type="password")
         if st.form_submit_button("🚀 ACCEDER AL SISTEMA", use_container_width=True):
             user_row = df_usuarios[df_usuarios["Usuario"] == u_in]
-            if not user_row.empty and str(user_row.iloc[0, 1]) == str(c_in):
+            
+            # Validación corregida para evitar fallos de lectura en DataFrames
+            if not user_row.empty and str(user_row["Clave"].values[0]) == str(c_in):
                 st.session_state.autenticado = True
                 st.session_state.usuario_actual = u_in
-                st.session_state.rol_actual = user_row.iloc[0, 2]
+                st.session_state.rol_actual = user_row["Rol"].values[0]
                 st.rerun()
             else: st.error("❌ Credenciales incorrectas")
 
@@ -74,7 +76,8 @@ if not st.session_state.autenticado:
 else:
     with st.sidebar:
         if os.path.exists(LOGO_FILE): st.image(LOGO_FILE, width=130)
-        st.markdown("<h2 style='color: #E74C3C; margin-top: 0;'>LEVELPLUS</h2>", unsafe_allow_embedded_html=True)
+        # Se corrigió el parámetro a unsafe_allow_html=True
+        st.markdown("<h2 style='color: #E74C3C; margin-top: 0;'>LEVELPLUS</h2>", unsafe_allow_html=True)
         st.markdown(f"👤 *{st.session_state.usuario_actual}* ({st.session_state.rol_actual})")
         st.markdown("---")
         opc = ["🏠 Panel / Mapa", "➕ Registrar Caja FAT", "📊 Inventario", "⚙️ Técnicos"] if st.session_state.rol_actual == "Máster" else ["➕ Registrar Caja FAT", "📊 Mis Actividades"]
@@ -87,7 +90,7 @@ else:
     df_act = cargar_datos()
 
     if sel == "🏠 Panel / Mapa":
-        st.markdown("<h1 style='color: #2C3E50;'>📊 Resumen General de la Red</h1>", unsafe_allow_embedded_html=True)
+        st.markdown("<h1 style='color: #2C3E50;'>📊 Resumen General de la Red</h1>", unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
         c1.metric("📦 Cajas FAT Totales", len(df_act))
         c2.metric("🟢 Operativas", len(df_act[df_act["Estado"] == "Operativo"]))
@@ -105,7 +108,7 @@ else:
             except: st.warning("Revisa el formato de los datos geográficos.")
 
     elif sel == "➕ Registrar Caja FAT":
-        st.markdown("<h1 style='color: #E74C3C;'>➕ Registro Técnico</h1>", unsafe_allow_embedded_html=True)
+        st.markdown("<h1 style='color: #E74C3C;'>➕ Registro Técnico</h1>", unsafe_allow_html=True)
         with st.form("f_fibra", clear_on_submit=True):
             col1, col2 = st.columns(2)
             with col1:
@@ -130,7 +133,7 @@ else:
                     except: st.error("❌ Formato incorrecto. Coloque una coma en medio (Ej: 10.48, -66.90)")
 
     elif sel in ["📊 Inventario", "📊 Mis Actividades"]:
-        st.markdown("<h1 style='color: #2C3E50;'>📋 Base de Datos de Inventario</h1>", unsafe_allow_embedded_html=True)
+        st.markdown("<h1 style='color: #2C3E50;'>📋 Base de Datos de Inventario</h1>", unsafe_allow_html=True)
         df_m = df_act if st.session_state.rol_actual == "Máster" else df_act[df_act["Registrado Por"] == st.session_state.usuario_actual]
         if df_m.empty: st.info("Sin registros.")
         else:
@@ -141,7 +144,7 @@ else:
             with c2: st.download_button("🌍 EXPORTAR KML (GOOGLE EARTH)", generar_kml(df_m), "Red_LEVELPLUS.kml", "application/vnd.google-earth.kml+xml", use_container_width=True)
 
     elif sel == "⚙️ Técnicos":
-        st.markdown("<h1 style='color: #2C3E50;'>⚙️ Gestión de Cuentas Técnicas</h1>", unsafe_allow_embedded_html=True)
+        st.markdown("<h1 style='color: #2C3E50;'>⚙️ Gestión de Cuentas Técnicas</h1>", unsafe_allow_html=True)
         df_u = cargar_usuarios()
         st.dataframe(df_u[["Usuario", "Rol"]], use_container_width=True)
         with st.form("a_tec", clear_on_submit=True):
