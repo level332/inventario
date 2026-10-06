@@ -49,27 +49,27 @@ if "rol_actual" not in st.session_state: st.session_state.rol_actual = ""
 df_usuarios = cargar_usuarios()
 df_inventario = cargar_datos()
 
-# CONFIGURACIÓN ESTÉTICA DE PÁGINA
 st.set_page_config(page_title="LEVELPLUS Fibra", layout="wide")
 
 if not st.session_state.autenticado:
-    # Pantalla de Login Estilizada
-    st.markdown("<div style='text-align: center; padding: 20px;'><h1 style='color: #E74C3C;'>🦁 LEVELPLUS</h1><h3 style='color: #7F8C8D;'>Dedicados a Conectarte</h3></div>", unsafe_allow_embedded_html=True)
+    # Se eliminó el formato complejo HTML para evitar fallos de renderizado
+    st.title("🦁 LEVELPLUS")
+    st.subheader("Dedicados a Conectarte - Sistema de Gestión de Fibra")
+    
     if os.path.exists(LOGO_FILE): 
-        col_c, _ = st.columns([1, 2])
-        with col_c: st.image(LOGO_FILE, width=150)
+        st.image(LOGO_FILE, width=150)
         
     st.markdown("---")
     with st.form("login_form"):
-        st.markdown("<h4>🔒 Iniciar Sesión en la Intranet</h4>", unsafe_allow_embedded_html=True)
+        st.write("🔒 Iniciar Sesión en la Intranet")
         u_in = st.text_input("Usuario / Técnico")
         c_in = st.text_input("Contraseña", type="password")
         if st.form_submit_button("🚀 ACCEDER AL SISTEMA", use_container_width=True):
             user_row = df_usuarios[df_usuarios["Usuario"] == u_in]
-            if not user_row.empty and str(user_row.iloc[0]["Clave"]) == str(c_in):
+            if not user_row.empty and str(user_row.iloc["Clave"]) == str(c_in):
                 st.session_state.autenticado = True
                 st.session_state.usuario_actual = u_in
-                st.session_state.rol_actual = user_row.iloc[0]["Rol"]
+                st.session_state.rol_actual = user_row.iloc["Rol"]
                 st.rerun()
             else: st.error("❌ Credenciales incorrectas")
 else:
