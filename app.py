@@ -87,8 +87,13 @@ with tab2:
         # Botón para descargar el Excel directamente desde la web
         with open(DB_FILE, "rb") as file:
             st.download_button(
-                label="📥 Descargar Base de Datos Completa (Excel)",
-                data=file,
-                file_name=DB_FILE,
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            label="Descargar Base de Datos Completa (Excel)",
+            data=file,
+            file_name=DB_FILE,
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+            
+            
+                
+            
          
