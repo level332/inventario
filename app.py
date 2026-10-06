@@ -94,7 +94,7 @@ if not st.session_state.autenticado:
                 st.session_state.rol_actual = user_row.iloc[0]["Rol"]
                 st.rerun()
             else:
-                st.error("❌ Usuario o contraseña incorre
+                st.error("❌ Usuario o contraseña incorrectos")
             
             
                 
